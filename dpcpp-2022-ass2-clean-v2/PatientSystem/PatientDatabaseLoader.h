@@ -5,9 +5,9 @@
 
 // This is a simulated class. It does not really connect to the database, but
 // for the sake of the assignment, pretend it does.
-class PatientDatabaseLoader : public AbstractPatientDatabaseLoader {
+class PatientDatabaseLoader : public AbstractPatientDatabaseLoader 
+{
 public:
-
 	// Inherited via AbstractPatientDatabaseLoader
 	virtual void initialiseConnection() override;
 
