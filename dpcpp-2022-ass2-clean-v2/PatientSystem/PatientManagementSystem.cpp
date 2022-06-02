@@ -6,18 +6,20 @@
 
 #include "Patient.h"
 #include "PatientDatabaseLoader.h"
+#include "PatientFileLoader.h"
 #include "Vitals.h"
 
 #include "GPNotificationSystemFacade.h"
 #include "HospitalAlertSystemFacade.h"
+#include "AbstractPatientDatabaseLoader.h"
+
 
 using namespace std;
 
 
 PatientManagementSystem::PatientManagementSystem() :
 	_patientDatabaseLoader(std::make_unique<PatientDatabaseLoader>()),
-	_hospitalAlertSystem(std::make_unique<HospitalAlertSystemFacade>()),
-	_gpNotificationSystem(std::make_unique<GPNotificationSystemFacade>())
+	_patientFileLoader(std::make_unique<FileLoader>())
 {
 	_patientDatabaseLoader->initialiseConnection();
 }
@@ -25,23 +27,29 @@ PatientManagementSystem::PatientManagementSystem() :
 PatientManagementSystem::~PatientManagementSystem()
 {
 	_patientDatabaseLoader->closeConnection();
-
-	// clear patient memory
-	for (Patient* p : _patients) {
+	// clear memory
+	for (auto p : _patients) {
 		delete p;
-	}
+	} 
 }
 
 void PatientManagementSystem::init()
 {
-	_patientDatabaseLoader->loadPatients(_patients);
+	auto d = new PatientDatabaseLoader();
+	auto f = new FileLoader();
+	auto df = new CompositeDataLoader();
+
+	df->addLoaders(d);
+	df->addLoaders(f);
+
+	df->loadPatients(_patients);
 	for (Patient* p : _patients) {
 		_patientLookup[p->uid()] = p;
 	}
 
-	for (Patient* p : _patients) {
-		// TODO: do any processing you need here
-	}
+	delete d;
+	delete f;
+	delete df;
 }
 
 void PatientManagementSystem::run()

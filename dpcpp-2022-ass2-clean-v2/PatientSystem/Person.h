@@ -6,6 +6,7 @@
 
 class Person {
 public:
+	Person();
 	Person(const std::string& firstName, const std::string& lastName, std::tm birthday);
 
 	const std::string& firstName() const { return _firstName; }

@@ -3,9 +3,11 @@
 
 #include <memory>
 #include <vector>
+#include <list>
 
 #include "PatientAlertLevels.h"
-
+#include "AlertLevel.h"
+#include "PatientManagementSystem.h"
 
 // forward declare classes
 class Vitals;
@@ -19,9 +21,13 @@ public:
 
 class Patient : public Person {
 public:
+	Patient();
+
+	Patient(CAlertLevel* AlertLevel);
 
 	Patient(const std::string& firstName, const std::string& lastName, std::tm birthday);
 
+	virtual ~Patient();
 	// return a calculated age for the patient
 	// this calculation is not accurate, but is suitable for assignment purposes
 	int age() const;
@@ -39,7 +45,6 @@ public:
 	void addDiagnosis(const std::string& diagnosis);
 	const std::string& primaryDiagnosis() const;
 
-	// add a vitals mesaurements record to the patient
 	void addVitals(const Vitals* v);
 	const std::vector<const Vitals*> vitals() const;
 
@@ -47,11 +52,20 @@ public:
 	void setAlertLevel(AlertLevel level);
 	const AlertLevel alertLevel() const { return _alertLevel; }
 
+	void addAlertLevelObserver(AlertLevelBase* alBase);
 protected:
 	std::vector<std::string> _diagnosis;
 	std::vector<const Vitals*> _vitals;
 	AlertLevel _alertLevel;
 
 	friend std::ostream& operator<<(std::ostream& os, const Patient& p);
+	friend std::istream& operator>>(std::istream& is, Patient& p);
+
+	CAlertLevel* _vAlertLevel;
+	std::list<AlertLevelBase*> _alertLevelBase;
+	void setNotification(AlertLevel alertLevel);
+	
+	friend std::ostream& operator<<(std::ostream& os, const Patient& p);
+	friend std::istream& operator>>(std::istream& is, Patient& p);
 };
 

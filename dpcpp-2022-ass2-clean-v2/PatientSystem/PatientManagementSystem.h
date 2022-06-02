@@ -8,9 +8,13 @@
 
 // forward declare several classes
 class AbstractPatientDatabaseLoader;
+class FileLoader;
+class PatientDatabaseLoader;
 class HospitalAlertSystemFacade;
 class GPNotificationSystemFacade;
 class Patient;
+class AlertLevelBase;
+class PatientFileLoader;
 
 
 class PatientManagementSystem
@@ -33,12 +37,8 @@ public:
 
 protected:
 	std::vector<Patient*> _patients;
-	std::map<std::string, Patient*> _patientLookup;
-
-	std::unique_ptr<HospitalAlertSystemFacade> _hospitalAlertSystem;
-	std::unique_ptr<GPNotificationSystemFacade> _gpNotificationSystem;
-
+	std::map<std::string, Patient*> _patientLookup;	
+	std::unique_ptr<AbstractPatientDatabaseLoader> _patientFileLoader;
 	std::unique_ptr<AbstractPatientDatabaseLoader> _patientDatabaseLoader;
-
 };
 
